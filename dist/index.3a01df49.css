@@ -1,0 +1,20 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  scroll-behavior: none;
+}
+
+#container {
+  width: 100vw;
+  height: 100vh;
+  background-color: #000;
+}
+
+canvas {
+  display: block;
+}
+
+/*# sourceMappingURL=index.3a01df49.css.map */
