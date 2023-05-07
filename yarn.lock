@@ -244,6 +244,11 @@
   "resolved" "https://registry.npmjs.org/core-util-is/-/core-util-is-1.0.3.tgz"
   "version" "1.0.3"
 
+"dat.gui@^0.7.6":
+  "integrity" "sha512-sCNc1OHobc+Erc1HqiswYgHdVNpSJUlk/Hz8vzOCsER7rl+oF/4+v8GXFUyCgtXpoCX6+bnmg07DedLvBLwYKQ=="
+  "resolved" "https://registry.npmjs.org/dat.gui/-/dat.gui-0.7.9.tgz"
+  "version" "0.7.9"
+
 "detect-libc@^1.0.3":
   "integrity" "sha512-pGjwhsmsp4kL2RTz08wcOlGN83otlqHeD/Z5T8GXZB+/YcpQ/dgo+lbU8ZsGxV0HIvqqxo9l7mqYwyYMD9bKDg=="
   "resolved" "https://registry.npmjs.org/detect-libc/-/detect-libc-1.0.3.tgz"
@@ -446,6 +451,14 @@
     "@lmdb/lmdb-linux-x64" "2.5.2"
     "@lmdb/lmdb-win32-x64" "2.5.2"
 
+"magicshader@^0.1.5":
+  "integrity" "sha512-cOrbcp2DJONYBCVzdcR3sKtYT1Ml3x449M09XJKlyq47DloW1frTir0bzfiuw3zDp5aL3VRJ/TQXvh9Sv9Wc/A=="
+  "resolved" "https://registry.npmjs.org/magicshader/-/magicshader-0.1.5.tgz"
+  "version" "0.1.5"
+  dependencies:
+    "dat.gui" "^0.7.6"
+    "three" "^0.114.0"
+
 "map-limit@0.0.1":
   "integrity" "sha512-pJpcfLPnIF/Sk3taPW21G/RQsEEirGaFpCW3oXRwH9dnFHPHNGjNyvh++rdmC2fNqEaTw2MhYJraoJWAHx8kEg=="
   "resolved" "https://registry.npmjs.org/map-limit/-/map-limit-0.0.1.tgz"
@@ -589,6 +602,11 @@
   "integrity" "sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w=="
   "resolved" "https://registry.npmjs.org/supports-preserve-symlinks-flag/-/supports-preserve-symlinks-flag-1.0.0.tgz"
   "version" "1.0.0"
+
+"three@^0.114.0":
+  "integrity" "sha512-3av45FxJeqYm7Rl02dfGBoqTaf2a934oUB4zMNrN8xjmASoSGeeykYoAr35+UntTdJDY/STw6CY3KuXFBWETig=="
+  "resolved" "https://registry.npmjs.org/three/-/three-0.114.0.tgz"
+  "version" "0.114.0"
 
 "three@^0.152.2":
   "integrity" "sha512-Ff9zIpSfkkqcBcpdiFo2f35vA9ZucO+N8TNacJOqaEE6DrB0eufItVMib8bK8Pcju/ZNT6a7blE1GhTpkdsILw=="

@@ -564,19 +564,41 @@ var _vertexGlsl = require("./shaders/vertex.glsl");
 var _vertexGlslDefault = parcelHelpers.interopDefault(_vertexGlsl);
 var _fragmentGlsl = require("./shaders/fragment.glsl");
 var _fragmentGlslDefault = parcelHelpers.interopDefault(_fragmentGlsl);
+var _bubleTexturePng = require("./buble-texture.png");
+var _bubleTexturePngDefault = parcelHelpers.interopDefault(_bubleTexturePng);
 class Sketch {
     constructor(){
         this.renderer = new _three.WebGLRenderer({
             antialias: true
         });
         this.renderer.setSize(window.innerWidth, window.innerHeight);
+        console.log(window.innerWidth, window.innerHeight);
         document.getElementById("container").appendChild(this.renderer.domElement);
         this.camera = new _three.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 10);
         this.camera.position.z = 1;
         this.scene = new _three.Scene();
-        this.addMesh();
         this.time = 0;
+        this.height = window.innerHeight;
+        this.width = window.innerWidth;
+        this.addMesh();
+        this.resize();
         this.render();
+        this.mouseEvents();
+        window.addEventListener("resize", this.resize.bind(this));
+    }
+    resize() {
+        var w = window.innerWidth;
+        var h = window.innerHeight;
+        this.renderer.setSize(w, h);
+        this.camera.aspect = w / h;
+        this.camera.updateProjectionMatrix();
+    }
+    mouseEvents() {
+        this.mouse = new _three.Vector2();
+        document.addEventListener("mousemove", (event)=>{
+            this.mouse.x = event.pageX / this.width - 0.5;
+            this.mouse.y = -event.pageY / this.height + 0.5;
+        });
     }
     addMesh() {
         this.geometry = new _three.PlaneGeometry(1, 1);
@@ -585,20 +607,33 @@ class Sketch {
             fragmentShader: (0, _fragmentGlslDefault.default),
             vertexShader: (0, _vertexGlslDefault.default),
             uniforms: {
-                progress: {
+                time: {
                     type: "f",
                     value: 0
                 },
-                side: _three.DoubleSide
+                mouse: {
+                    value: new _three.Vector2(0, 0)
+                },
+                matcap: {
+                    value: new _three.TextureLoader().load((0, _bubleTexturePngDefault.default))
+                },
+                resolution: {
+                    value: new _three.Vector4()
+                }
             }
         });
         this.mesh = new _three.Mesh(this.geometry, this.material);
         this.scene.add(this.mesh);
     }
     render() {
-        this.time++;
-        this.mesh.rotation.x = this.time / 2000;
-        this.mesh.rotation.y = this.time / 1000;
+        this.time += 0.5;
+        // Atualizando o valor da propriedade 'time' do material do mesh
+        this.mesh.material.uniforms.time.value = this.time;
+        if (this.mouse) // Atualizando a posição do mouse dentro do material do mesh
+        this.mesh.material.uniforms.mouse.value = this.mouse;
+        // Atualize a rotação do mesh, se desejar
+        // this.mesh.rotation.x = this.time / 2000;
+        // this.mesh.rotation.y = this.time / 1000;
         this.renderer.render(this.scene, this.camera);
         window.requestAnimationFrame(this.render.bind(this));
     }
@@ -755,7 +790,7 @@ new Sketch(); // export default class Sketch{
  // }
  // new Sketch('container');
 
-},{"three":"ktPTu","./shaders/vertex.glsl":"fWka7","./shaders/fragment.glsl":"6yofB","@parcel/transformer-js/src/esmodule-helpers.js":"kE0Qk"}],"ktPTu":[function(require,module,exports) {
+},{"three":"ktPTu","./shaders/vertex.glsl":"fWka7","./shaders/fragment.glsl":"6yofB","@parcel/transformer-js/src/esmodule-helpers.js":"kE0Qk","./buble-texture.png":"jFzVX"}],"ktPTu":[function(require,module,exports) {
 /**
  * @license
  * Copyright 2010-2023 Three.js Authors
@@ -30618,7 +30653,44 @@ exports.export = function(dest, destName, get) {
 module.exports = "#define GLSLIFY 1\nvarying vec2 vUv;\n\nvoid main() {\n  vUv = uv;\n  vec4 mvPosition = modelViewMatrix * vec4( position, 1. );\n  gl_Position = projectionMatrix * mvPosition;\n}";
 
 },{}],"6yofB":[function(require,module,exports) {
-module.exports = "#define GLSLIFY 1\nuniform float time;\nuniform float progress;\nuniform sampler2D texture1;\nuniform vec4 resolution;\nvarying vec2 vUv;\nfloat PI = 3.1459;\n\nfloat sdSphere(vec3 p, float r){\n    return length(p) - r;\n}\n\nfloat map(vec3 p){\n    return sdSphere(p, 0.4);\n}\n\nvec3 calcNormal(in vec3 p)\n{\n    const float eps = 0.0001;\n    const vec2 h = vec2(eps,0);\n    return normalize( vec3(map(p+h.xyy) - map(p-h.xyy),\n                           map(p+h.yxy) - map(p-h.yxy),\n                           map(p+h.yyx) - map(p-h.yyx) ) );\n}\n\nvoid main(){\n    vec2 newUv = (vUv - vec2(0.5) * resolution.zw + vec2(0.5));\n    vec3 camPos = vec3(0., 0., 2.);\n    vec3 ray = normalize(vec3(vUv - vec2(0.4), -1));\n\n    vec3 rayPos = camPos;\n    float scalarValue = 0.;\n    // none object will be further then 5\n    float scalarMax = 5.;\n    float rayDistanceToPoint = 0.;\n\n    for(int i=0; i<256;++i){\n        vec3 pos = camPos + scalarValue * ray;\n        rayDistanceToPoint = map(pos);\n        if(rayDistanceToPoint < 0000.1 || scalarValue > scalarMax) break;\n        scalarValue += rayDistanceToPoint;\n    }\n\n    vec3 color = vec3(0.);\n    if(scalarValue < scalarMax){\n        vec3 pos = camPos + rayDistanceToPoint * ray;\n        color = vec3(1.);\n        vec3 normal = calcNormal(pos);\n        color = normal;\n        float diff = dot(vec3(1.), normal);\n        color = vec3(diff);\n    }\n\n    gl_FragColor = vec4(color, 1.);\n}";
+module.exports = "#define GLSLIFY 1\nuniform float time;\nuniform float progress;\nuniform vec2 mouse;\nuniform sampler2D matcap;\nuniform vec4 resolution;\nvarying vec2 vUv;\nfloat PI = 3.1459;\n\nvec2 getmatcap(vec3 eye, vec3 normal) {\n  vec3 reflected = reflect(eye, normal);\n  float m = 2.8284271247461903 * sqrt( reflected.z+1.0 );\n  return reflected.xy / m + 0.5;\n}\n\nfloat sdSphere(vec3 p, float r){\n    return length(p) - r;\n}\n\nfloat sdBox( vec3 p, vec3 b )\n{\n  vec3 q = abs(p) - b;\n  return length(max(q,0.0)) + min(max(q.x,max(q.y,q.z)),0.0);\n}\n\nmat4 rotationMatrix(vec3 axis, float angle) {\n    axis = normalize(axis);\n    float s = sin(angle);\n    float c = cos(angle);\n    float oc = 1.0 - c;\n    \n    return mat4(oc * axis.x * axis.x + c,           oc * axis.x * axis.y - axis.z * s,  oc * axis.z * axis.x + axis.y * s,  0.0,\n                oc * axis.x * axis.y + axis.z * s,  oc * axis.y * axis.y + c,           oc * axis.y * axis.z - axis.x * s,  0.0,\n                oc * axis.z * axis.x - axis.y * s,  oc * axis.y * axis.z + axis.x * s,  oc * axis.z * axis.z + c,           0.0,\n                0.0,                                0.0,                                0.0,                                1.0);\n}\n\nfloat smin( float a, float b, float k )\n{\n    float h = clamp( 0.5+0.5*(b-a)/k, 0.0, 1.0 );\n    return mix( b, a, h ) - k*h*(1.0-h);\n}\n\nvec3 rotate(vec3 v, vec3 axis, float angle) {\n	mat4 m = rotationMatrix(axis, angle);\n	return (m * vec4(v, 1.0)).xyz;\n}\n\nfloat sdf(vec3 p){\n    vec3 p1 = rotate(p, vec3(1.), time/12.);\n    float box = sdBox(p1, vec3(0.3));\n    float sphere = sdSphere(p - vec3(mouse, 0), 0.2);\n    return smin(box, sphere, 0.1);\n}\n\nvec3 calcNormal(in vec3 p)\n{\n    const float eps = 0.0001;\n    const vec2 h = vec2(eps,0);\n    return normalize(vec3(sdf(p+h.xyy) - sdf(p-h.xyy),\n                           sdf(p+h.yxy) - sdf(p-h.yxy),\n                           sdf(p+h.yyx) - sdf(p-h.yyx) ) );\n}\n\nvoid main(){\n    float dist = length(vUv - vec2(0.5));\n    vec3 bg = mix(vec3(0.), vec3(0.3), dist);\n    vec2 newUv = ((vUv - vec2(0.5)) * resolution.zw + vec2(0.5));\n    vec3 camPos = vec3(0., 0., 2.);\n    vec3 ray = normalize(vec3(vUv - vec2(0.5), -1));\n\n    float scalarValue = 0.;\n    float scalarMax = 5.;\n\n    for(int i=0; i<256;++i){\n        vec3 pos = camPos + scalarValue * ray;\n        float rayDistanceToPoint = sdf(pos);\n        if(rayDistanceToPoint < 0.0001 || scalarValue > scalarMax) break;\n        scalarValue += rayDistanceToPoint;\n    }\n\n    vec3 color = bg;\n    if(scalarValue < scalarMax){\n        vec3 pos = camPos + scalarValue * ray;\n        vec3 normal = calcNormal(pos);\n        float diff = dot(vec3(1.), normal);\n        vec2 matcapUv = getmatcap(ray, normal);\n        color = vec3(diff);\n        color = texture2D(matcap, matcapUv).rgb;\n    }\n\n    gl_FragColor = vec4(color, 1.);\n}";
+
+},{}],"jFzVX":[function(require,module,exports) {
+module.exports = require("6f6759c6be6e9ef8").getBundleURL("1G2bZ") + "buble-texture.8582acf5.png" + "?" + Date.now();
+
+},{"6f6759c6be6e9ef8":"cDVh4"}],"cDVh4":[function(require,module,exports) {
+"use strict";
+var bundleURL = {};
+function getBundleURLCached(id) {
+    var value = bundleURL[id];
+    if (!value) {
+        value = getBundleURL();
+        bundleURL[id] = value;
+    }
+    return value;
+}
+function getBundleURL() {
+    try {
+        throw new Error();
+    } catch (err) {
+        var matches = ("" + err.stack).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^)\n]+/g);
+        if (matches) // The first two stack frames will be this function and getBundleURLCached.
+        // Use the 3rd one, which will be a runtime in the original bundle.
+        return getBaseURL(matches[2]);
+    }
+    return "/";
+}
+function getBaseURL(url) {
+    return ("" + url).replace(/^((?:https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/.+)\/[^/]+$/, "$1") + "/";
+} // TODO: Replace uses with `new URL(url).origin` when ie11 is no longer supported.
+function getOrigin(url) {
+    var matches = ("" + url).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^/]+/);
+    if (!matches) throw new Error("Origin not found");
+    return matches[0];
+}
+exports.getBundleURL = getBundleURLCached;
+exports.getBaseURL = getBaseURL;
+exports.getOrigin = getOrigin;
 
 },{}]},["9zgjn","igcvL"], "igcvL", "parcelRequire94c2")
 

@@ -3,11 +3,14 @@ import * as THREE from 'three';
 import vertex from './shaders/vertex.glsl';
 import fragment from './shaders/fragment.glsl';
 
+import matcap from './buble-texture.png'
+
 // init
 export default class Sketch {
   constructor(){
     this.renderer = new THREE.WebGLRenderer( { antialias: true } );
     this.renderer.setSize( window.innerWidth, window.innerHeight );
+    console.log(window.innerWidth, window.innerHeight);
     document.getElementById("container").appendChild( this.renderer.domElement );
 
     this.camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.01, 10 );
@@ -15,10 +18,32 @@ export default class Sketch {
 
     this.scene = new THREE.Scene();
 
-    this.addMesh();
     this.time = 0;
+    this.height = window.innerHeight;
+    this.width = window.innerWidth;
 
+    this.addMesh();
+    this.resize();
     this.render();
+    this.mouseEvents();
+
+    window.addEventListener('resize', this.resize.bind(this));
+  }
+
+    resize(){
+      var w = window.innerWidth;
+      var h = window.innerHeight;
+      this.renderer.setSize( w, h );
+      this.camera.aspect = w / h;
+      this.camera.updateProjectionMatrix();
+    }
+
+  mouseEvents(){
+    this.mouse = new THREE.Vector2();
+    document.addEventListener('mousemove', (event) => {
+      this.mouse.x = event.pageX / this.width - 0.5;
+      this.mouse.y = - event.pageY / this.height + 0.5;
+    })
   }
 
   addMesh(){
@@ -29,11 +54,15 @@ export default class Sketch {
       fragmentShader: fragment,
       vertexShader: vertex,
       uniforms: {
-        progress: {
-          type: "f",
-          value: 0
-        },
-        side: THREE.DoubleSide
+        time: { type: "f", value: 0 },
+        mouse: { value: new THREE.Vector2(0,0)},
+        matcap: { value: new THREE.TextureLoader().load(matcap)},
+        resolution: { value: new THREE.Vector4() },
+        // progress: {
+        //   type: "f",
+        //   value: 0
+        // },
+        // side: THREE.DoubleSide
       }
     })
     this.mesh = new THREE.Mesh( this.geometry, this.material );
@@ -41,9 +70,20 @@ export default class Sketch {
   }
 
   render(){
-    this.time++;
-    this.mesh.rotation.x = this.time / 2000;
-    this.mesh.rotation.y = this.time / 1000;
+    this.time += 0.5;
+  
+    // Atualizando o valor da propriedade 'time' do material do mesh
+    this.mesh.material.uniforms.time.value = this.time;
+
+    if(this.mouse) {
+      // Atualizando a posição do mouse dentro do material do mesh
+      this.mesh.material.uniforms.mouse.value = this.mouse;
+    }
+  
+    // Atualize a rotação do mesh, se desejar
+    // this.mesh.rotation.x = this.time / 2000;
+    // this.mesh.rotation.y = this.time / 1000;
+  
     this.renderer.render( this.scene, this.camera );
     window.requestAnimationFrame(this.render.bind(this));
   };
