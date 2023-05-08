@@ -12,6 +12,12 @@ vec2 getmatcap(vec3 eye, vec3 normal) {
   return reflected.xy / m + 0.5;
 }
 
+float sdTorus( vec3 p, vec2 t )
+{
+  vec2 q = vec2(length(p.xz)-t.x,p.y);
+  return length(q)-t.y;
+}
+
 float sdSphere(vec3 p, float r){
     return length(p) - r;
 }
@@ -45,11 +51,27 @@ vec3 rotate(vec3 v, vec3 axis, float angle) {
 	return (m * vec4(v, 1.0)).xyz;
 }
 
+float random(vec2 co){
+    return fract(sin(dot(co.xy, vec2(12.9898, 78.233))) * 43758.5453);
+}
+
 float sdf(vec3 p){
     vec3 p1 = rotate(p, vec3(1.), time/12.);
-    float box = sdBox(p1, vec3(0.3));
-    float sphere = sdSphere(p - vec3(mouse, 0), 0.2);
-    return smin(box, sphere, 0.1);
+
+    // float box = smin(sdTorus(p1, vec2(0.2)), sdSphere(p, 0.3), 0.1);
+    float box = sdTorus(p1, vec2(0.2));
+    float mouseSphere = sdSphere(p - vec3(mouse * resolution.zw, 0), 0.2);
+    
+    float final = smin(box, mouseSphere, 0.1);
+    for(int i=0; i < 10; i++) {
+        float randOffset = random(vec2(i, 0.));
+        float progress = fract(time /3. + randOffset);
+        vec3 pos = vec3(sin(randOffset * 2. * PI), cos(randOffset * 2. * PI), 0.);
+        float goToCenter = sdSphere(p - pos * progress, 0.1);
+        final = smin(final, goToCenter, 0.1);
+    }
+
+    return final;
 }
 
 vec3 calcNormal(in vec3 p)
@@ -61,13 +83,12 @@ vec3 calcNormal(in vec3 p)
                            sdf(p+h.yyx) - sdf(p-h.yyx) ) );
 }
 
-
 void main(){
     float dist = length(vUv - vec2(0.5));
-    vec3 bg = mix(vec3(0.), vec3(0.3), dist);
+    vec3 bg = mix(vec3(1.), vec3(0.7), dist);
     vec2 newUv = ((vUv - vec2(0.5)) * resolution.zw + vec2(0.5));
     vec3 camPos = vec3(0., 0., 2.);
-    vec3 ray = normalize(vec3(vUv - vec2(0.5), -1));
+    vec3 ray = normalize(vec3((vUv - vec2(0.5))*resolution.zw, -1));
 
     float scalarValue = 0.;
     float scalarMax = 5.;
@@ -87,6 +108,10 @@ void main(){
         vec2 matcapUv = getmatcap(ray, normal);
         color = vec3(diff);
         color = texture2D(matcap, matcapUv).rgb;
+
+        float fresnel = pow(1. + dot(ray, normal),1.);
+
+        color = mix(color, bg, fresnel);
     }
 
     gl_FragColor = vec4(color, 1.);
