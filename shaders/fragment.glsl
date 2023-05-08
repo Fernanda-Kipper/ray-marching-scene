@@ -1,6 +1,7 @@
 uniform float time;
 uniform float progress;
 uniform vec2 mouse;
+uniform float balls;
 uniform sampler2D matcap;
 uniform vec4 resolution;
 varying vec2 vUv;
@@ -63,9 +64,9 @@ float sdf(vec3 p){
     float mouseSphere = sdSphere(p - vec3(mouse * resolution.zw, 0), 0.2);
     
     float final = smin(box, mouseSphere, 0.1);
-    for(int i=0; i < 10; i++) {
+    for(float i=0.; i < balls; i++) {
         float randOffset = random(vec2(i, 0.));
-        float progress = fract(time /3. + randOffset);
+        float progress = fract(time /2. + randOffset);
         vec3 pos = vec3(sin(randOffset * 2. * PI), cos(randOffset * 2. * PI), 0.);
         float goToCenter = sdSphere(p - pos * progress, 0.1);
         final = smin(final, goToCenter, 0.1);

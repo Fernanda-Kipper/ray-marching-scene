@@ -39,6 +39,7 @@ export default class Sketch {
   }
 
     play(){
+      this.material.uniforms.balls.value = 10;
       this.audio.load();
       this.audio.play();
     }
@@ -86,6 +87,7 @@ export default class Sketch {
         mouse: { value: new THREE.Vector2(0,0)},
         matcap: { value: new THREE.TextureLoader().load(matcap)},
         resolution: { value: new THREE.Vector4() },
+        balls: { value: 0 }
         // progress: {
         //   type: "f",
         //   value: 0
