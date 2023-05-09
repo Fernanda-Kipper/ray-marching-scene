@@ -5,8 +5,10 @@
 
 [This project](https://ray-marching-scene-4s66.vercel.app/) is a simple 3D scene created using ray marching technique, implemented with [WebGL](https://webgl2fundamentals.org/) and [Three.js](https://threejs.org/). The goal of this project is to demonstrate the power and flexibility of ray marching technique in creating visually interesting 3D scenes. 
 
-<img src="./.github/first-image.png" width="300">
-<img src="./.github/second-image.png" width="300">
+<p align="center">
+    <img src="./.github/first-image.png" width="500">
+    <img src="./.github/second-image.png" width="500">
+</p>
 
 ### Ray Marching
 
