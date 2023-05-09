@@ -1,6 +1,8 @@
 {
+  "source": "src/index.html",
   "scripts": {
-    "start": "parcel index.html"
+    "start": "parcel",
+    "build": "parcel build --dist-dir public"
   },
   "devDependencies": {
     "@parcel/transformer-glsl": "2.8.3",
