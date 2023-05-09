@@ -3,10 +3,16 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub contributors](https://img.shields.io/github/contributors/your-username/your-repository.svg)](https://github.com/Fernanda-Kipper/ray-marching-scene/graphs/contributors)
 
-[This project](https://ray-marching-scene-4s66.vercel.app/) is a simple 3D scene created using ray marching technique, implemented with WebGL and Three.js. The goal of this project is to demonstrate the power and flexibility of ray marching technique in creating visually interesting 3D scenes. 
+[This project](https://ray-marching-scene-4s66.vercel.app/) is a simple 3D scene created using ray marching technique, implemented with [WebGL](https://webgl2fundamentals.org/) and [Three.js](https://threejs.org/). The goal of this project is to demonstrate the power and flexibility of ray marching technique in creating visually interesting 3D scenes. 
 
-<img src="./.github/first-image.png">
-<img src="./.github/second-image.png">
+<img src="./.github/first-image.png" width="300">
+<img src="./.github/second-image.png" width="300">
+
+### Ray Marching
+
+Ray marching, also known as ray marching distance fields, is a technique used in computer graphics to render 3D scenes. It is a variation of ray tracing, where instead of tracing the path of rays of light from a camera to a surface, it iteratively steps along the ray direction and evaluates the distance function of the scene.
+
+
 
 ## Installation
 
