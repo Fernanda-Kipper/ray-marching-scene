@@ -1,0 +1,31 @@
+# Ray Marching Scene
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![GitHub contributors](https://img.shields.io/github/contributors/your-username/your-repository.svg)](https://github.com/Fernanda-Kipper/ray-marching-scene/graphs/contributors)
+
+[This project](https://ray-marching-scene-4s66.vercel.app/) is a simple 3D scene created using ray marching technique, implemented with WebGL and Three.js. The goal of this project is to demonstrate the power and flexibility of ray marching technique in creating visually interesting 3D scenes. 
+
+<img src="./.github/first-image.png">
+<img src="./.github/second-image.png">
+
+## Installation
+
+To use this project, first ensure that you have Node.js and npm installed on your machine. Then, clone or download the repository to your local machine and navigate to the project directory in the command line. Run the following commands:
+
+
+```bash
+git clone https://github.com/Fernanda-Kipper/ray-marching-scene.git
+cd ray-marching-scene
+npm install
+npm run start
+```
+
+## Contributing
+
+Contributions to this project are welcome! 
+
+If you find a bug or have an idea for an improvement, please create a new issue or submit a pull request.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
