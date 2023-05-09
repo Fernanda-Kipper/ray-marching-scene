@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub contributors](https://img.shields.io/github/contributors/your-username/your-repository.svg)](https://github.com/Fernanda-Kipper/ray-marching-scene/graphs/contributors)
 
-[This project](https://ray-marching-scene-4s66.vercel.app/) is a simple 3D scene created using ray marching technique, implemented with [WebGL](https://webgl2fundamentals.org/) and [Three.js](https://threejs.org/). The goal of this project is to demonstrate the power and flexibility of ray marching technique in creating visually interesting 3D scenes. 
+[This project](https://ray-marching-scene.vercel.app/) is a simple 3D scene created using ray marching technique, implemented with [WebGL](https://webgl2fundamentals.org/) and [Three.js](https://threejs.org/). The goal of this project is to demonstrate the power and flexibility of ray marching technique in creating visually interesting 3D scenes. 
 
 <p align="center">
     <img src="./.github/first-image.png" width="500">
