@@ -14,15 +14,23 @@ body {
     background-color: black;
 }
 
+.btn-group {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999999;
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    gap: 12px;
+    transform: translateX(-50%);
+}
+
 canvas {
     display: block;
 }
 
 button {
-    z-index: 999999;
-    position: fixed;
-    bottom: 24px;
-    left: 50%;
     color: white;
     background-color: rgb(34, 159, 255);
     font-weight: 600;
@@ -32,4 +40,9 @@ button {
     cursor: pointer;
     font-size: 24px;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
 }

@@ -2,10 +2,10 @@ import * as THREE from 'three';
 
 import vertex from './shaders/vertex.glsl';
 import fragment from './shaders/fragment.glsl';
+import Button from './button'
 
 import matcap from './assets/buble-texture.png';
 
-// init
 export default class Sketch {
   constructor(){
     this.audio = document.getElementById("audio");
@@ -23,6 +23,12 @@ export default class Sketch {
     this.camera = new THREE.OrthographicCamera(frustumSize / -2, frustumSize / 2, frustumSize / 2, frustumSize / -2, -1000, 1000);
     this.camera.position.set(0, 0, 2);
 
+    this.playBtn = new Button('play-btn');
+    this.playBtn.addClickListener(this.play.bind(this));
+
+    this.stopBtn = new Button('stop-btn');
+    this.stopBtn.addClickListener(this.stop.bind(this));
+
     this.scene = new THREE.Scene();
 
     this.time = 0;
@@ -36,65 +42,74 @@ export default class Sketch {
     this.mouseEvents();
 
     window.addEventListener('resize', this.resize.bind(this));
-    document.getElementById('play-btn').addEventListener('click', this.play.bind(this))
   }
 
-    play(){
-      this.material.uniforms.balls.value = 5;
-      this.audio.load();
-      this.audio.play();
+  stop(){
+    this.material.uniforms.balls.value = 0;
+    this.audio.pause();
+    this.audio.currentTime = 0;
+    this.stopBtn.disable();
+  }
 
-      setTimeout(() => {
-        this.clock = 0.15;
-      }, 7000)
+  play(){
+    this.material.uniforms.balls.value = 5;
+    this.audio.load();
+    this.audio.play();
+    
+    this.audio.addEventListener('ended', this.stop.bind(this));
+    this.stopBtn.enable();
 
-      setTimeout(() => {
-        this.clock = 0.2;
-      }, 9500)
+    setTimeout(() => {
+      this.clock = 0.15;
+    }, 7000)
 
-      setTimeout(() => {
-        this.clock = 0.1;
-      }, 13000)
+    setTimeout(() => {
+      this.clock = 0.2;
+    }, 9500)
 
-      setTimeout(() => {
-        this.clock = 0.05;
-      }, 20000)
+    setTimeout(() => {
+      this.clock = 0.1;
+    }, 13000)
 
-      setTimeout(() => {
-        this.clock = 0.15;
-      }, 21000)
+    setTimeout(() => {
+      this.clock = 0.05;
+    }, 20000)
 
-      setTimeout(() => {
-        this.clock = 0.05;
-      }, 24000)
+    setTimeout(() => {
+      this.clock = 0.15;
+    }, 21000)
 
-      setTimeout(() => {
-        this.clock = 0.15;
-      }, 25000)
+    setTimeout(() => {
+      this.clock = 0.05;
+    }, 23500)
+
+    setTimeout(() => {
+      this.clock = 0.15;
+    }, 25000)
+  }
+
+  resize(){
+    var w = window.innerWidth;
+    var h = window.innerHeight;
+    this.renderer.setSize( w, h );
+    this.camera.aspect = w / h;
+
+    this.imageAspect = 1;
+    let a1,a2;
+    if(this.height/this.width > this.imageAspect){
+      a1 = (this.width / this.height) * this.imageAspect;
+      a2 = 1;
+    } else {
+      a1 = 1;
+      a2 = (this.height / this.width) * this.imageAspect;
     }
 
-    resize(){
-      var w = window.innerWidth;
-      var h = window.innerHeight;
-      this.renderer.setSize( w, h );
-      this.camera.aspect = w / h;
+    this.material.uniforms.resolution.value.x = this.width;
+    this.material.uniforms.resolution.value.y = this.height;
+    this.material.uniforms.resolution.value.z = a1;
 
-      this.imageAspect = 1;
-      let a1,a2;
-      if(this.height/this.width > this.imageAspect){
-        a1 = (this.width / this.height) * this.imageAspect;
-        a2 = 1;
-      } else {
-        a1 = 1;
-        a2 = (this.height / this.width) * this.imageAspect;
-      }
-
-      this.material.uniforms.resolution.value.x = this.width;
-      this.material.uniforms.resolution.value.y = this.height;
-      this.material.uniforms.resolution.value.z = a1;
-
-      this.camera.updateProjectionMatrix();
-    }
+    this.camera.updateProjectionMatrix();
+  }
 
   mouseEvents(){
     this.mouse = new THREE.Vector2();
@@ -139,7 +154,7 @@ export default class Sketch {
       this.mesh.material.uniforms.mouse.value = this.mouse;
     }
   
-    // Atualize a rotação do mesh, se desejar
+    // Atualiza a rotação do mesh
     // this.mesh.rotation.x = this.time / 2000;
     // this.mesh.rotation.y = this.time / 1000;
   
