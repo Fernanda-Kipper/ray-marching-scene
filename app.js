@@ -26,6 +26,7 @@ export default class Sketch {
     this.scene = new THREE.Scene();
 
     this.time = 0;
+    this.clock = 0.1;
     this.height = window.innerHeight;
     this.width = window.innerWidth;
 
@@ -39,9 +40,37 @@ export default class Sketch {
   }
 
     play(){
-      this.material.uniforms.balls.value = 10;
+      this.material.uniforms.balls.value = 5;
       this.audio.load();
       this.audio.play();
+
+      setTimeout(() => {
+        this.clock = 0.15;
+      }, 7000)
+
+      setTimeout(() => {
+        this.clock = 0.2;
+      }, 9500)
+
+      setTimeout(() => {
+        this.clock = 0.1;
+      }, 13000)
+
+      setTimeout(() => {
+        this.clock = 0.05;
+      }, 20000)
+
+      setTimeout(() => {
+        this.clock = 0.15;
+      }, 21000)
+
+      setTimeout(() => {
+        this.clock = 0.05;
+      }, 24000)
+
+      setTimeout(() => {
+        this.clock = 0.15;
+      }, 25000)
     }
 
     resize(){
@@ -100,7 +129,7 @@ export default class Sketch {
   }
 
   render(){
-    this.time += 0.1;
+    this.time += this.clock;
   
     // Atualizando o valor da propriedade 'time' do material do mesh
     this.mesh.material.uniforms.time.value = this.time;
